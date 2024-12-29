@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Copy Image to Clipboard</title>
+    </head>
+    <body>
+        <img id="image" src="pet.jpg" alt="Image" width="300">
+
+        <button id="copyButton">Copy Image</button>
+
+        <script>
+
+            a=document.getElementById("image").addEventListener('click',async()=>{
+            const img = new Image
+            const c = document.createElement('canvas')
+            const ctx = c.getContext('2d')
+            
+            function setCanvasImage(path,func){
+                img.onload = function(){
+                    c.width = this.naturalWidth
+                    c.height = this.naturalHeight
+                    ctx.drawImage(this,0,0)
+                    c.toBlob(blob=>{
+                        func(blob)
+                    },'image/png')
+                }
+                img.src = path
+            }
+            
+            setCanvasImage(a.src,(imgBlob)=>{
+                console.log('doing it!')
+                navigator.clipboard.write(
+                    [
+                        new ClipboardItem({'image/png': imgBlob})
+                    ]
+                )
+                .then(e=>{console.log('Image copied to clipboard')})
+                .catch(e=>{console.log(e)})
+            })
+            })
+  </script>
+    </body>
+</html>
